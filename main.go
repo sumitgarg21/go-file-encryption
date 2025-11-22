@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-
-	"github.com/sumitgarg21/go-file-encryption/filecrypt/filecrypt"
+	"syscall"
+	
+	"github.com/sumitgarg21/go-file-encryption/filecrypt"
 	"golang.org/x/term"
 )
 
@@ -46,7 +47,7 @@ func printHelp(){
 }
 func encryptHandle(){
 	if len(os.Args)<3{
-		Println("missing the path to the file. For more info, run go run . help")
+		fmt.Println("missing the path to the file. For more info, run go run . help")
 		os.Exit(0)
 	}
 	file := os.Args[2]
@@ -55,12 +56,12 @@ func encryptHandle(){
 	}
 	password := getPassword()
 	fmt.Println("\n Encrypting...")
-	fileCrypt.Encrypt(file,password)
+	filecrypt.Encrypt(file,password)
 	fmt.Println("\n file successfully protected")
 }
 func decryptHandle(){
 	if len(os.Args)<3{
-		Println("missing the path to the file. For more info, run go run . help")
+		fmt.Println("missing the path to the file. For more info, run go run . help")
 		os.Exit(0)
 	}
 	file := os.Args[2]
@@ -68,16 +69,16 @@ func decryptHandle(){
 		panic("File not found")
 	}
 	fmt.Print("Enter Password:")
-	password,_ := term.ReadPassoword(0)
+	password,_ := term.ReadPassword(int(syscall.Stdin))
 	fmt.Println("\n Decrypting...")
-	fileCrypt.Decrypt(file,password)
+	filecrypt.Decrypt(file,password)
 	fmt.Println("\n file successfully decrypted")
 }
 func getPassword() []byte{
 	fmt.Print("Enter Password")
-	password,_ := term.ReadPassoword(0)
+	password,_ := term.ReadPassword(int(syscall.Stdin))
 	fmt.Print("\nConfirm Password: ")
-	password2,_ := term.ReadPassoword(0)
+	password2,_ := term.ReadPassword(int(syscall.Stdin))
 	if !validatePassword(password,password2){
 		fmt.Print("\nPasswords do not match. please try again\n")
 		return getPassword()
@@ -85,10 +86,7 @@ func getPassword() []byte{
 	return password
 }
 func validatePassword(password1 []byte, password2 []byte) bool{
-	if !bytes.Equal(password1,password2){
-		return false
-	}
-	return true
+	return bytes.Equal(password1,password2)
 }
 func validateFile(file string) bool{
 	if _,err := os.Stat(file); os.IsNotExist(err){
