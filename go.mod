@@ -1,4 +1,4 @@
-module github.com/sumitgarg21
+module github.com/sumitgarg21/go-file-encryption
 
 go 1.25.2
 

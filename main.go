@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sumitgarg21/go-file-encryption/filecrypt"
+	"github.com/sumitgarg21/go-file-encryption/filecrypt/filecrypt"
 	"golang.org/x/term"
 )
 
@@ -86,13 +86,13 @@ func getPassword() []byte{
 }
 func validatePassword(password1 []byte, password2 []byte) bool{
 	if !bytes.Equal(password1,password2){
-		return 0
+		return false
 	}
-	return 1
+	return true
 }
 func validateFile(file string) bool{
 	if _,err := os.Stat(file); os.IsNotExist(err){
-		return 0
+		return false
 	}
-	return 1
+	return true
 }
